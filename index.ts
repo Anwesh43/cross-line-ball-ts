@@ -4,7 +4,7 @@ const lines : number = 4
 const parts : number = 2 * lines + 1 
 const scGap : number = 0.02 / parts 
 const strokeFactor : number = 90 
-const ballRFactor : number = 13.2 
+const ballRFactor : number = 25.2
 const lineFactor : number = 4.2    
 const delay : number = 20 
 const colors : Array<string> = [
@@ -23,7 +23,7 @@ class ScaleUtil {
     }
 
     static divideScale(scale : number, i : number, n : number) : number {
-        return Math.min(1 / n, scale - i / n) * n 
+        return Math.min(1 / n, ScaleUtil.maxScale(scale, i, n)) * n 
     }
 
     static sinify(scale : number) : number {
@@ -42,7 +42,7 @@ class DrawingUtil {
 
     static drawCircle(context : CanvasRenderingContext2D, x : number, y : number, r : number) {
         context.beginPath()
-        context.arc(0, 0, r, 0, 2 * Math.PI)
+        context.arc(x, y, r, 0, 2 * Math.PI)
         context.fill()
     }
 
@@ -58,7 +58,9 @@ class DrawingUtil {
             const sfj2 : number = ScaleUtil.divideScale(sf, 5 + j, parts)
             context.save()
             context.rotate(j * Math.PI / 2 + Math.PI / 4)
-            DrawingUtil.drawLine(context, 0, 0, size * sfj1, 0)
+            if (sfj1 >= 0.1) { 
+                DrawingUtil.drawLine(context, 0, 0, size * sfj1, 0)
+            }
             DrawingUtil.drawCircle(context, size * sfj2, 0, r * sf1)
             context.restore()
         }
@@ -88,6 +90,8 @@ class Stage {
     }
 
     render() {
+        this.context.fillStyle = backColor 
+        this.context.fillRect(0, 0, w, h)
         this.renderer.render(this.context)
     }
 
