@@ -212,3 +212,25 @@ class CrossLineBall {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    clb : CrossLineBall = new CrossLineBall()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.clb.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.clb.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.clb.update(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
